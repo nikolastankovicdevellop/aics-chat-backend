@@ -27,26 +27,35 @@ app.post('/chat', async (req, res) => {
         }
 
         const id = Number(userId);
-
         const user = await User.findOne({ userId: id });
         const registered = user ? user.registered : false;
 
         if (!registered) {
-            return res.json({ reply: "Molimo registrujte se da biste videli detalje o vozilima." });
+            return res.json({
+                reply: "Niste registrovani. Molimo vas posetite aics.com i napravite nalog kako biste pristupili detaljima o vozilima."
+            });
+        }
+
+        const brands = ["Audi", "BMW", "Mercedes", "Volkswagen", "Toyota", "Opel", "Peugeot", "Renault", "Kia", "Hyundai"];
+
+        const foundBrand = brands.find(brand =>
+            message.toLowerCase().includes(brand.toLowerCase())
+        );
+
+        if (!foundBrand) {
+            return res.json({ reply: "Molimo unesite brend vozila (npr. Audi, BMW, Toyota...)." });
         }
 
         const vehicle = await Vehicle.findOne({
-            $or: [
-                { brand: { $regex: message, $options: 'i' } },
-                { model: { $regex: message, $options: 'i' } }
-            ]
+            brand: { $regex: foundBrand, $options: 'i' }
         });
 
         const reply = vehicle
             ? `Vozilo: ${vehicle.brand} ${vehicle.model}, Godina: ${vehicle.year}, Cena: ${vehicle.price}€`
-            : "Nismo pronašli vozilo koje tražite.";
+            : `Nismo pronašli nijedno vozilo marke ${foundBrand}.`;
 
         res.json({ reply });
+
     } catch (err) {
         console.error("Error in /chat:", err);
         res.status(500).json({ reply: "Došlo je do greške na serveru." });
