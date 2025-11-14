@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
-const VehicleSchema = new mongoose.Schema({
-  brand: { type: String, required: true },
-  model: { type: String, required: true },
-  year: { type: Number, required: true },
-  price: { type: Number, required: true },
-}, { timestamps: true });
+const vehicleSchema = new mongoose.Schema({
+    marka: String,
+    model: String,
+    godiste: Number,
+    cena: Number,
+    kilometraza: Number,
+    opis: String
+});
 
-module.exports = mongoose.model('Vehicle', VehicleSchema);
+module.exports = mongoose.model('Vehicle', vehicleSchema);

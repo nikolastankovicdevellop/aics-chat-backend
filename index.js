@@ -18,6 +18,35 @@ mongoose.connect(process.env.MONGO_URI, {
     .then(() => console.log("MongoDB connected"))
     .catch(err => console.log("MongoDB connection error:", err));
 
+
+ app.post('/addVehicle', async (req, res) => {
+    try {
+        const { marka, model, godiste, cena, kilometraza, opis } = req.body;
+
+        if (!marka || model || !godiste || !cena || !kilometraza || !opis) {
+            return res.status(400).json({ reply: "Nedostaje parametar vozila" });
+        }
+
+        const newVehicle = new Vehicle({
+            marka,
+            model,
+            godiste,
+            cena,
+            kilometraza,
+            opis
+        });
+
+        await newVehicle.save();
+        res.status(201).json({ reply: "Vozilo uspešno dodato", vehicle: newVehicle });
+
+
+    } catch (err) {
+        console.error("Error in adding vehicle:", err);
+        res.status(500).json({ reply: "Došlo je do greške na serveru." });
+    }
+
+});
+
 app.post('/chat', async (req, res) => {
     try {
         const { userId, message } = req.body;
