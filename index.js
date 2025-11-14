@@ -19,11 +19,11 @@ mongoose.connect(process.env.MONGO_URI, {
     .catch(err => console.log("MongoDB connection error:", err));
 
 
- app.post('/addVehicle', async (req, res) => {
+app.post('/addVehicle', async (req, res) => {
     try {
         const { marka, model, godiste, cena, kilometraza, opis } = req.body;
 
-        if (!marka || model || !godiste || !cena || !kilometraza || !opis) {
+        if (!marka || !model || !godiste || !cena || !kilometraza || !opis) {
             return res.status(400).json({ reply: "Nedostaje parametar vozila" });
         }
 
